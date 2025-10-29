@@ -195,4 +195,7 @@ public class CustomerModel {
     public ArrayList<Product> getTrolley() {
         return trolley;
     }
+    public void setTheProduct(Product theProduct) {
+        this.theProduct = theProduct;
+    }
 }

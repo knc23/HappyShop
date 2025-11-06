@@ -38,7 +38,7 @@ public class Main extends Application {
     public static void main(String[] args) {
         launch(args); // Launches the JavaFX application and calls the @Override start()
     }
-
+//
     //starts the system
     @Override
     public void start(Stage window) throws IOException {

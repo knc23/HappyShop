@@ -25,6 +25,7 @@ public class CustomerModel {
     public CustomerView cusView;
     public DatabaseRW databaseRW; //Interface type, not specific implementation
                                   //Benefits: Flexibility: Easily change the database implementation.
+    private ArrayList<Product> productList = new ArrayList<>(); // search results fetched from the database
 
     private Product theProduct =null; // product found from search
     private ArrayList<Product> trolley =  new ArrayList<>(); // a list of products in trolley
@@ -37,28 +38,30 @@ public class CustomerModel {
 
     //SELECT productID, description, image, unitPrice,inStock quantity
     void search() throws SQLException {
-        String productId = cusView.tfId.getText().trim();
-        if(!productId.isEmpty()){
-            theProduct = databaseRW.searchByProductId(productId); //search database
-            if(theProduct != null && theProduct.getStockQuantity()>0){
-                double unitPrice = theProduct.getUnitPrice();
-                String description = theProduct.getProductDescription();
-                int stock = theProduct.getStockQuantity();
+        String productItem = cusView.searchTextField.getText().trim();
+        if (!productItem.equals("")) {
+            productList = databaseRW.searchProduct(productItem); //search database
+            if(productList != null ) {
+                theProduct = productList.get(0);
+                if (theProduct.getStockQuantity()>0){
+                    double unitPrice = theProduct.getUnitPrice();
+                    String description = theProduct.getProductDescription();
+                    int stock = theProduct.getStockQuantity();
 
-                String baseInfo = String.format("Product_Id: %s\n%s,\nPrice: £%.2f", productId, description, unitPrice);
-                String quantityInfo = stock < 100 ? String.format("\n%d units left.", stock) : "";
-                displayLaSearchResult = baseInfo + quantityInfo;
-                System.out.println(displayLaSearchResult);
-            }
-            else{
+                    String baseInfo = String.format("Product_Id / Name: %s\n%s,\nPrice: £%.2f", productItem, description, unitPrice);
+                    String quantityInfo = stock < 100 ? String.format("\n%d units left.", stock) : "";
+                    displayLaSearchResult = baseInfo + quantityInfo;
+                    System.out.println(displayLaSearchResult);
+                }
+            }else{
                 theProduct=null;
-                displayLaSearchResult = "No Product was found with ID " + productId;
-                System.out.println("No Product was found with ID " + productId);
+                displayLaSearchResult = "No Product was found with " + productItem;
+                System.out.println("No Product was found with " + productItem);
             }
         }else{
             theProduct=null;
-            displayLaSearchResult = "Please type ProductID";
-            System.out.println("Please type ProductID.");
+            displayLaSearchResult = "Please type the product you would like to search for";
+            System.out.println("Please type the product you would like to search for");
         }
         updateView();
     }

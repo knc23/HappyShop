@@ -27,6 +27,11 @@ public class CustomerModel {
                                   //Benefits: Flexibility: Easily change the database implementation.
     private ArrayList<Product> productList = new ArrayList<>(); // search results fetched from the database
 
+    private enum UpdateForAction {
+        BtnSearch
+
+    }
+
     private Product theProduct =null; // product found from search
     private ArrayList<Product> trolley =  new ArrayList<>(); // a list of products in trolley
 
@@ -63,10 +68,12 @@ public class CustomerModel {
             displayLaSearchResult = "Please type the product you would like to search for";
             System.out.println("Please type the product you would like to search for");
         }
-        updateView();
+        updateObservableProductList(UpdateForAction.BtnSearch);
     }
 
     void addToTrolley(){
+        System.out.println("Add to trolley got called from controller");
+        theProduct = cusView.obrLvProducts.getSelectionModel().getSelectedItem();
         if(theProduct!= null){
 
             // trolley.add(theProduct) — Product is appended to the end of the trolley.
@@ -75,6 +82,7 @@ public class CustomerModel {
             // 1. Merges items with the same product ID (combining their quantities).
             // 2. Sorts the products in the trolley by product ID.
             // trolley.add(theProduct);
+
             makeOrganizedTrolley();
             displayTaTrolley = ProductListFormatter.buildString(trolley); //build a String for trolley so that we can show it
         }
@@ -178,7 +186,16 @@ public class CustomerModel {
         displayTaReceipt="";
     }
 
+    private void updateObservableProductList(UpdateForAction updateFor) {
+        switch (updateFor) {
+            case UpdateForAction.BtnSearch:
+                cusView.updateObservableProductList(productList);
+                break;
+        }
+    }
+
     void updateView() {
+        theProduct = cusView.obrLvProducts.getSelectionModel().getSelectedItem();
         if(theProduct != null){
             imageName = theProduct.getProductImageName();
             String relativeImageUrl = StorageLocation.imageFolder +imageName; //relative file path, eg images/0001.jpg
@@ -190,7 +207,7 @@ public class CustomerModel {
         else{
             imageName = "imageHolder.jpg";
         }
-        cusView.update(imageName, displayLaSearchResult, displayTaTrolley,displayTaReceipt);
+        cusView.update(displayTaTrolley,displayTaReceipt);
     }
      // extra notes:
      //Path.toUri(): Converts a Path object (a file or a directory path) to a URI object.

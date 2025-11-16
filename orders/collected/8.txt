@@ -1,8 +1,8 @@
 Order ID: 8 
-State: Ordered 
+State: Collected
 OrderedDateTime: 2025-11-04 11:43:13 
-ProgressingDateTime:  
-CollectedDateTime: 
+ProgressingDateTime: 2025-11-11 12:58:41
+CollectedDateTime: 2025-11-11 12:58:42
 Items:
  0003    Toaster            ( 3) £  59.97
  0005    Digital Camera     (15) £1349.85

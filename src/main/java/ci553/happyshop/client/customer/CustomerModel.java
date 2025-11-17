@@ -34,10 +34,12 @@ public class CustomerModel {
 
     private Product theProduct =null; // product found from search
     private ArrayList<Product> trolley =  new ArrayList<>(); // a list of products in trolley
+    private ArrayList<Product> wishList = new ArrayList<>();
 
     // Four UI elements to be passed to CustomerView for display updates.
     private String imageName = "imageHolder.jpg";                // Image to show in product preview (Search Page)
     private String displayLaSearchResult = "No Product was searched yet"; // Label showing search result message (Search Page)
+    private String displayTaWishList = "";
     private String displayTaTrolley = "";                                // Text area content showing current trolley items (Trolley Page)
     private String displayTaReceipt = "";                                // Text area content showing receipt after checkout (Receipt Page)
 
@@ -69,6 +71,34 @@ public class CustomerModel {
             System.out.println("Please type the product you would like to search for");
         }
         updateObservableProductList(UpdateForAction.BtnSearch);
+    }
+
+    void addToWishList(){
+        System.out.println("Add to Wish List got called from controller");
+        theProduct = cusView.obrLvProducts.getSelectionModel().getSelectedItem();
+        if(theProduct!= null){
+
+            makeOrganizedWishList();
+            displayTaWishList = ProductListFormatter.buildString(wishList); //build a String for trolley so that we can show it
+        }
+        else{
+            displayLaSearchResult = "Please search for an available product before adding it to the trolley";
+            System.out.println("must search and get an available product before add to trolley");
+        }
+        displayTaReceipt=""; // Clear receipt to switch back to trolleyPage (receipt shows only when not empty)
+        updateView();
+    }
+
+    void makeOrganizedWishList(){
+        for ( Product product : wishList) {
+            if ( product.getProductId().equals(theProduct.getProductId())) {
+                product.setOrderedQuantity(product.getOrderedQuantity() + theProduct.getOrderedQuantity());
+                return;
+            }
+        }
+        Product newProduct = new Product(theProduct.getProductId(), theProduct.getProductDescription(), theProduct.getProductImageName(), theProduct.getUnitPrice(), theProduct.getStockQuantity());
+        wishList.add(newProduct);
+        wishList.sort(Comparator.comparing(Product::getProductId));
     }
 
     void addToTrolley(){
@@ -207,13 +237,14 @@ public class CustomerModel {
         else{
             imageName = "imageHolder.jpg";
         }
-        cusView.update(displayTaTrolley,displayTaReceipt);
+        cusView.update(displayTaWishList, displayTaTrolley,displayTaReceipt);
     }
      // extra notes:
      //Path.toUri(): Converts a Path object (a file or a directory path) to a URI object.
      //File.toURI(): Converts a File object (a file on the filesystem) to a URI object
 
     //for test only
+    public ArrayList<Product> getWishList() { return wishList;}
     public ArrayList<Product> getTrolley() {
         return trolley;
     }

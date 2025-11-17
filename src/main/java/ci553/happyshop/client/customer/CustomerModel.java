@@ -39,6 +39,7 @@ public class CustomerModel {
     // Four UI elements to be passed to CustomerView for display updates.
     private String imageName = "imageHolder.jpg";                // Image to show in product preview (Search Page)
     private String displayLaSearchResult = "No Product was searched yet"; // Label showing search result message (Search Page)
+    private String displayTaInfo = "";
     private String displayTaWishList = "";
     private String displayTaTrolley = "";                                // Text area content showing current trolley items (Trolley Page)
     private String displayTaReceipt = "";                                // Text area content showing receipt after checkout (Receipt Page)
@@ -71,6 +72,21 @@ public class CustomerModel {
             System.out.println("Please type the product you would like to search for");
         }
         updateObservableProductList(UpdateForAction.BtnSearch);
+    }
+
+    void checkInfo() {
+        theProduct = cusView.obrLvProducts.getSelectionModel().getSelectedItem();
+        if(theProduct!= null) {
+            double unitPrice = theProduct.getUnitPrice();
+            String description = theProduct.getProductDescription();
+            int stock = theProduct.getStockQuantity();
+
+            String baseInfo = String.format("Product_Id / Name: %s\n%s,\nPrice: £%.2f", theProduct, description, unitPrice);
+            String quantityInfo = stock < 100 ? String.format("\n%d units left.", stock) : "";
+            displayTaInfo = baseInfo + quantityInfo;
+            System.out.println(displayLaSearchResult);
+        }
+        updateView();
     }
 
     void addToWishList(){
@@ -237,7 +253,7 @@ public class CustomerModel {
         else{
             imageName = "imageHolder.jpg";
         }
-        cusView.update(displayTaWishList, displayTaTrolley,displayTaReceipt);
+        cusView.update(displayTaInfo, displayTaWishList, displayTaTrolley,displayTaReceipt);
     }
      // extra notes:
      //Path.toUri(): Converts a Path object (a file or a directory path) to a URI object.

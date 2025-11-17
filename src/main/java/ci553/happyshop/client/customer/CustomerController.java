@@ -11,6 +11,9 @@ public class CustomerController {
             case "Search":
                 cusModel.search();
                 break;
+            case "More Information":
+                cusModel.checkInfo();
+                break;
             case "Add to Wish List":
                 cusModel.addToWishList();
                 break;

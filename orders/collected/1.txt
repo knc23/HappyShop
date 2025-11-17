@@ -1,10 +1,11 @@
 Order ID: 1 
 State: Collected
-OrderedDateTime: 2025-10-21 11:16:59 
-ProgressingDateTime: 2025-10-21 11:22:56
-CollectedDateTime: 2025-10-21 11:25:04
+OrderedDateTime: 2025-11-16 22:50:23 
+ProgressingDateTime: 2025-11-16 22:50:25
+CollectedDateTime: 2025-11-16 22:50:25
 Items:
- 0001    40 inch TV         ( 1) £ 269.00
+ 0007    USB drive          ( 4) £  27.96
+ 0009    USB3 drive         ( 5) £  44.95
 --------------------------------------------
- Total                               £ 269.00
+ Total                               £  72.91
 

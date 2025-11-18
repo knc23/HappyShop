@@ -27,11 +27,12 @@ public class CustomerClient extends Application {
     @Override
     public void start(Stage window) {
         CustomerView cusView = new CustomerView();
-        CustomerController cusController = new CustomerController();
         CustomerModel cusModel = new CustomerModel();
+        CustomerController cusController = new CustomerController(cusView, cusModel);
         DatabaseRW databaseRW = DatabaseRWFactory.createDatabaseRW();
 
         cusView.cusController = cusController;
+        cusController.cusView = cusView;
         cusController.cusModel = cusModel;
         cusModel.cusView = cusView;
         cusModel.databaseRW = databaseRW;

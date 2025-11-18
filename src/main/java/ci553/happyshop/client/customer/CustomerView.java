@@ -40,9 +40,14 @@ public class CustomerView  {
     private final int HEIGHT = UIStyle.customerWinHeight;
     private final int COLUMN_WIDTH = WIDTH / 2 - 10;
 
-    private HBox hbRoot; // Top-level layout manager
-    private VBox vbRoot;
+    public VBox welcomeRoot = new VBox();
+    private HBox hbRoot = new HBox(); // Top-level layout manager
+    public VBox vbRoot;
     private HBox hbShopMenu;
+    //private VBox vbLoginPage;
+    public VBox vbLoginPage;
+    private VBox vbCreateAccPage;
+    public VBox vbSearchPage;
     private VBox vbInfoPage;
     private VBox vbWishListPage;
     private VBox vbTrolleyPage;  //vbTrolleyPage and vbReceiptPage will swap with each other when need
@@ -56,21 +61,30 @@ public class CustomerView  {
 
     //four controllers needs updating when program going on
     private ImageView ivProduct; //image area in searchPage
-    private Label lbProductInfo;//product text info in searchPage
+    private Label lbProductInfo;
+    public Label laLoginMsg = new Label();//product text info in searchPage
+    public TextField tfAccID = new TextField();
+    public TextField pfAccPwd = new PasswordField();
     private TextArea taInfo;
     private TextArea taWishList;
     private TextArea taTrolley; //in trolley Page
     private TextArea taHistory;
     private TextArea taReceipt;//in receipt page
 
+    TextField tfCreateAccID, pfCreateAccPwd, pfCreateAccPwd2, tfCreateAccUserFN,  tfCreateAccUserLN, tfCreateAccEmail = new TextField();
+    TextArea taCreateAccMsg = new TextArea();
+    DatePicker dpCreateAccBDay;
+
     // Holds a reference to this CustomerView window for future access and management
     // (e.g., positioning the removeProductNotifier when needed).
     private Stage viewWindow;
 
     public void start(Stage window) {
-        VBox vbSearchPage = createSearchPage();
+        vbSearchPage = createSearchPage();
         hbShopMenu = createShopMenuPage();
         vbInfoPage = CreateInformationPage();
+        vbLoginPage = CreateLoginPage();
+        vbCreateAccPage = CreateAccountPage();
         vbWishListPage = CreateWishListPage();
         vbTrolleyPage = CreateTrolleyPage();
         vbHistoryPage = createHistoryPage();
@@ -84,14 +98,17 @@ public class CustomerView  {
         lineContainer.setPrefWidth(4); // Give it some space
         lineContainer.setAlignment(Pos.CENTER);
 
-
         hbRoot = new HBox(10, vbSearchPage, lineContainer, vbInfoPage); //initialize to show trolleyPage
 
         vbRoot = new VBox(10,hbShopMenu, hbRoot);
         vbRoot.setAlignment(Pos.CENTER);
         vbRoot.setStyle(UIStyle.rootStyle);
 
-        Scene scene = new Scene(vbRoot, WIDTH, HEIGHT);
+        //welcomeRoot = new VBox(10, vbLoginPage);
+        welcomeRoot.getChildren().clear();
+        welcomeRoot.getChildren().add(vbLoginPage);
+
+        Scene scene = new Scene(welcomeRoot, WIDTH, HEIGHT);
         window.setScene(scene);
         window.setTitle("🛒 HappyShop Customer Client");
         WinPosManager.registerWindow(window,WIDTH,HEIGHT); //calculate position x and y for this window
@@ -125,7 +142,168 @@ public class CustomerView  {
         return hbShopMenu;
     }
 
-/// --------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+    /// --------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+        private VBox CreateLoginPage() {
+            Label laWelcome = new Label("Welcome to HappyShop");
+            laWelcome.setStyle(UIStyle.labelTitleStyle);
+
+            //--------------------------------------------------------------------------------------------------------------
+
+            Label laDescription = new Label("Login to start searching products");
+            laDescription.setStyle(UIStyle.labelTitleStyle);
+
+            //--------------------------------------------------------------------------------------------------------------
+
+            Label laAccID = new Label("Account ID :");
+            laAccID.setStyle(UIStyle.labelStyle);
+
+            tfAccID = new TextField();
+
+            HBox hbAccID = new HBox(10,laAccID, tfAccID);
+
+            //--------------------------------------------------------------------------------------------------------------
+
+            Label laAccPwd = new Label("Password :");
+            laAccPwd.setStyle(UIStyle.labelStyle);
+
+            pfAccPwd = new PasswordField();
+
+            HBox hbAccPwd = new HBox(10,laAccPwd,pfAccPwd);
+
+            //--------------------------------------------------------------------------------------------------------------
+
+            Button btnLogin = new Button("LOGIN");
+            btnLogin.setStyle(UIStyle.buttonStyle);
+            btnLogin.setOnAction(e -> cusController.login(tfAccID.getText(), pfAccPwd.getText()));
+
+            //--------------------------------------------------------------------------------------------------------------
+
+            laLoginMsg = new Label("");
+            laLoginMsg.setStyle(UIStyle.labelStyle);
+
+            //--------------------------------------------------------------------------------------------------------------
+
+            Label laCreateAcc = new Label("Don't have an Account?");
+            laCreateAcc.setStyle(UIStyle.labelStyle);
+
+            Button btnCreateAcc = new Button("Create Account");
+            btnCreateAcc.setStyle(UIStyle.buttonStyle);
+            btnCreateAcc.setOnAction(this::buttonClicked);
+
+            HBox hbCreateAcc = new HBox(10, laCreateAcc, btnCreateAcc);
+
+            //--------------------------------------------------------------------------------------------------------------
+
+            vbLoginPage = new VBox(10, laWelcome, laDescription, hbAccID, hbAccPwd, btnLogin, laLoginMsg, hbCreateAcc);
+            vbLoginPage.setPrefWidth(COLUMN_WIDTH);
+            vbLoginPage.setAlignment(Pos.CENTER);
+            vbLoginPage.setStyle("-fx-padding: 15px;");
+
+            return vbLoginPage;
+        }
+
+    /// --------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+    private VBox CreateAccountPage() {
+        Label laDescription = new Label("Create a Account,Fill in the following");
+        laDescription.setStyle(UIStyle.labelStyle);
+
+        //--------------------------------------------------------------------------------------------------------------
+
+        Label laCreateAccUserFN = new Label("FIRST NAME:");
+        laCreateAccUserFN.setStyle(UIStyle.labelStyle);
+
+        tfCreateAccUserFN = new TextField();
+
+        HBox hbNewAccFN = new HBox(10,laCreateAccUserFN, tfCreateAccUserFN);
+
+        //--------------------------------------------------------------------------------------------------------------
+
+        Label laCreatewAccUserLN = new Label("LAST NAME:");
+        laCreatewAccUserLN.setStyle(UIStyle.labelStyle);
+
+        tfCreateAccUserLN = new TextField();
+
+        HBox hbNewAccLN = new HBox(10, laCreatewAccUserLN, tfCreateAccUserLN);
+
+        //--------------------------------------------------------------------------------------------------------------
+
+        Label laCreateAccID = new Label("Account Number you prefer:");
+        laCreateAccID.setStyle(UIStyle.labelStyle);
+
+        tfCreateAccID = new TextField();
+
+        HBox hbNewAccID = new HBox(10, laCreateAccID, tfCreateAccID);
+
+        //--------------------------------------------------------------------------------------------------------------
+
+        Label laCreateAccPwd = new Label("PASSWORD:");
+        laCreateAccPwd.setStyle(UIStyle.labelStyle);
+
+        pfCreateAccPwd = new PasswordField();
+
+        HBox hbNewAccPwd = new HBox(10,laCreateAccPwd,pfCreateAccPwd);
+
+        //--------------------------------------------------------------------------------------------------------------
+
+        Label laCreateAccPwd2 = new Label("RE-ENTER Password:");
+        laCreateAccPwd2.setStyle(UIStyle.labelStyle);
+
+        pfCreateAccPwd2 = new PasswordField();
+
+        HBox hbNewAccPwd2 = new HBox(10, laCreateAccPwd2, pfCreateAccPwd2);
+
+        //--------------------------------------------------------------------------------------------------------------
+
+        Label laCreateAccEmail = new Label("EMAIL ADDRESS:");
+        laCreateAccEmail.setStyle(UIStyle.labelStyle);
+
+        tfCreateAccEmail = new TextField();
+
+        HBox hbNewAccEmail = new HBox(10, laCreateAccEmail, tfCreateAccEmail);
+
+        //--------------------------------------------------------------------------------------------------------------
+
+        Label laCreateAccBDay = new Label("BIRTHDAY DATE:");
+        laCreateAccBDay.setStyle(UIStyle.labelStyle);
+
+        dpCreateAccBDay = new DatePicker();
+
+        HBox hbNewAccBDay = new HBox(10, laCreateAccBDay, dpCreateAccBDay);
+
+        //--------------------------------------------------------------------------------------------------------------
+
+        taCreateAccMsg = new TextArea("");
+
+        //--------------------------------------------------------------------------------------------------------------
+
+        Button btnCreateAcc = new Button("Create Account");
+        btnCreateAcc.setOnAction(e -> cusController.handleCreateAccount( tfCreateAccID.getText(),
+                pfCreateAccPwd.getText(),
+                tfCreateAccUserFN.getText(),
+                tfCreateAccUserLN.getText(),
+                pfCreateAccPwd2.getText(),
+                tfCreateAccEmail.getText(),
+                dpCreateAccBDay.getValue()
+        ));
+
+        //--------------------------------------------------------------------------------------------------------------
+
+        Button btnBack = new Button("Have an Account already? Back to Login");
+        btnBack.setOnAction(this::buttonClicked);
+
+        //--------------------------------------------------------------------------------------------------------------
+
+        vbCreateAccPage = new VBox(10, laDescription, hbNewAccFN, hbNewAccLN, hbNewAccID, hbNewAccPwd, hbNewAccPwd2, hbNewAccEmail, hbNewAccBDay, taCreateAccMsg, btnCreateAcc, btnBack);
+        vbCreateAccPage.setPrefWidth(COLUMN_WIDTH);
+        vbCreateAccPage.setAlignment(Pos.TOP_CENTER);
+        vbCreateAccPage.setStyle("-fx-padding: 15px;");
+
+        return vbCreateAccPage;
+    }
+
+    /// --------------------------------------------------------------------------------------------------------------------------------------------------------------------------
     private VBox createSearchPage() {
         Label laPageTitle = new Label("Search by Product ID/Name");
         laPageTitle.setStyle(UIStyle.labelTitleStyle);
@@ -367,6 +545,20 @@ public class CustomerView  {
         try{
             Button btn = (Button)event.getSource();
             String action = btn.getText();
+//            if(action.equals("LOGIN")) {
+//                cusController.login(tfAccID.getText(), pfAccPwd.getText());
+//            }
+            if(action.equals("Create Account")) {
+                //showPage(vbCreateAccPage);
+                welcomeRoot.getChildren().clear();
+                welcomeRoot.getChildren().add(vbCreateAccPage);
+                if (viewWindow.getScene().getRoot() != welcomeRoot) {
+                    viewWindow.setScene(new Scene(welcomeRoot, WIDTH, HEIGHT));
+                }
+            }
+            if(action.equals("Have an Account already? Back to Login")) {
+                showPage(vbLoginPage);
+            }
             if(action.equals("My Wish List")) {
                 showPage(vbWishListPage);
             }
@@ -376,6 +568,7 @@ public class CustomerView  {
             if(action.equals("My History")) {
                 showPage(vbHistoryPage);
             }
+            //log out button
             if(action.equals("More Information") && obrLvProducts.getSelectionModel().getSelectedItem()!=null) {
                 showPage(vbInfoPage);
             }
@@ -387,6 +580,8 @@ public class CustomerView  {
             }
             if(action.equals("OK & Close")){
                 showPage(vbInfoPage);
+                cusController.doAction(action);
+                //showLoginPage();
             }
             cusController.doAction(action);
         }
@@ -394,7 +589,6 @@ public class CustomerView  {
             e.printStackTrace();
         }
     }
-
 
     public void update(String info, String wishList, String trolley, String receipt) {
 
@@ -416,9 +610,24 @@ public class CustomerView  {
         obeProductList.addAll(productList);
     }
 
+    public void showSearchPage() {
+        Scene scene = new Scene(vbRoot, WIDTH, HEIGHT);
+        viewWindow.setScene(scene);
+    }
+
+    public void showLoginPage() {
+        welcomeRoot.getChildren().clear();
+        welcomeRoot.getChildren().add(vbLoginPage);
+
+        if (viewWindow.getScene() == null || viewWindow.getScene().getRoot() != welcomeRoot) {
+            Scene scene = new Scene(welcomeRoot, WIDTH, HEIGHT);
+            viewWindow.setScene(scene);
+        }
+    }
+
     // Replaces the last child of hbRoot with the specified page.
     // the last child is either vbTrolleyPage or vbReceiptPage.
-    private void showPage(Node pageToShow) {
+    public void showPage(Node pageToShow) {
         int lastIndex = hbRoot.getChildren().size() - 1;
         if (lastIndex >= 0) {
             hbRoot.getChildren().set(lastIndex, pageToShow);

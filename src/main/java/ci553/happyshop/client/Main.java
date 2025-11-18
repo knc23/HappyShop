@@ -71,8 +71,8 @@ public class Main extends Application {
      */
     private void startCustomerClient(){
         CustomerView cusView = new CustomerView();
-        CustomerController cusController = new CustomerController();
         CustomerModel cusModel = new CustomerModel();
+        CustomerController cusController = new CustomerController(cusView, cusModel);
         DatabaseRW databaseRW = DatabaseRWFactory.createDatabaseRW();
 
         cusView.cusController = cusController;

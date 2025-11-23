@@ -441,7 +441,7 @@ public class CustomerView  {
         btnCancel.setOnAction(this::buttonClicked);
         btnCancel.setStyle(UIStyle.buttonStyle);
 
-        Button btnAddToTrolley = new Button("Add to Trolley");
+        Button btnAddToTrolley = new Button("Add ALL to Trolley");
         btnAddToTrolley.setOnAction(this::buttonClicked);
         btnAddToTrolley.setStyle(UIStyle.buttonStyle);
 
@@ -477,7 +477,7 @@ public class CustomerView  {
         btnCancel.setOnAction(this::buttonClicked);
         btnCancel.setStyle(UIStyle.buttonStyle);
 
-        Button btnAddToWishList = new Button("Add to Wish List");
+        Button btnAddToWishList = new Button("Add ALL to Wish List");
         btnAddToWishList.setOnAction(this::buttonClicked);
         btnAddToWishList.setStyle(UIStyle.buttonStyle);
 
@@ -580,6 +580,12 @@ public class CustomerView  {
                 showPage(vbInfoPage);
             }
             if(action.equals("Add to Wish List") && obrLvProducts.getSelectionModel().getSelectedItem()!=null) {
+
+            }
+            if(action.equals("Add ALL to Wish List")) {
+
+            }
+            if(action.equals("Add ALL to Trolley")) {
 
             }
             if(action.equals("Add to Trolley") && obrLvProducts.getSelectionModel().getSelectedItem()!=null) {

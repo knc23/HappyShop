@@ -152,6 +152,14 @@ public class CustomerModel {
         trolley.sort(Comparator.comparing(Product::getProductId));
     }
 
+    public void addALLToWishList() {
+
+    }
+
+    public void addALLToTrolley() {
+
+    }
+
     void checkOut() throws IOException, SQLException {
         if(!trolley.isEmpty()){
             // Group the products in the trolley by productId to optimize stock checking

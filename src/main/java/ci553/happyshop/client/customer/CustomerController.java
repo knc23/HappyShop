@@ -126,6 +126,12 @@ public class CustomerController {
             case "Add to Trolley":
                 cusModel.addToTrolley();
                 break;
+            case "Add to ALL Wish List":
+                cusModel.addALLToWishList();
+                break;
+            case "Add to ALL Trolley":
+                cusModel.addALLToTrolley();
+                break;
             case "Cancel":
                 cusModel.cancel();
                 break;

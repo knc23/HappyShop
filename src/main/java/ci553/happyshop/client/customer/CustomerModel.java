@@ -11,10 +11,9 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.Map;
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.util.*;
 
 /**
  * TODO
@@ -23,6 +22,7 @@ import java.util.Map;
  */
 public class CustomerModel {
     public CustomerView cusView;
+    private CustomerUser currentUser;
     public DatabaseRW databaseRW; //Interface type, not specific implementation
                                   //Benefits: Flexibility: Easily change the database implementation.
     private ArrayList<Product> productList = new ArrayList<>(); // search results fetched from the database
@@ -43,6 +43,11 @@ public class CustomerModel {
     private String displayTaWishList = "";
     private String displayTaTrolley = "";                                // Text area content showing current trolley items (Trolley Page)
     private String displayTaReceipt = "";                                // Text area content showing receipt after checkout (Receipt Page)
+
+    public void setCurrentUser(CustomerUser user) {
+        this.currentUser = user;
+    }
+
 
     //SELECT productID, description, image, unitPrice,inStock quantity
     void search() throws SQLException {
@@ -172,6 +177,7 @@ public class CustomerModel {
 
             if(insufficientProducts.isEmpty()){ // If stock is sufficient for all products
                 //get OrderHub and tell it to make a new Order
+
                 OrderHub orderHub =OrderHub.getOrderHub();
                 Order theOrder = orderHub.newOrder(trolley);
                 trolley.clear();
@@ -183,6 +189,11 @@ public class CustomerModel {
                         ProductListFormatter.buildString(theOrder.getProductList())
                 );
                 System.out.println(displayTaReceipt);
+
+
+
+                currentUser.addPurchaseHistory(displayTaReceipt);
+                System.out.println("Added lastest purchase to history");
             }
             else{ // Some products have insufficient stock — build an error message to inform the customer
                 StringBuilder errorMsg = new StringBuilder();

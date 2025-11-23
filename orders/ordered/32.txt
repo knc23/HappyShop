@@ -1,0 +1,12 @@
+Order ID: 32 
+State: Ordered 
+OrderedDateTime: 2025-11-23 15:49:38 
+ProgressingDateTime:  
+CollectedDateTime: 
+Items:
+ 0001    40 inch TV         ( 5) £1345.00
+ 0002    DAB Radio          ( 2) £  59.98
+ 0005    Digital Camera     ( 3) £ 269.97
+--------------------------------------------
+ Total                               £1674.95
+

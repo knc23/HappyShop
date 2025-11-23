@@ -68,7 +68,7 @@ public class CustomerView  {
     private TextArea taInfo;
     private TextArea taWishList;
     private TextArea taTrolley; //in trolley Page
-    private TextArea taHistory;
+    public TextArea taHistory;
     private TextArea taReceipt;//in receipt page
 
     TextField tfCreateAccID, pfCreateAccPwd, pfCreateAccPwd2, tfCreateAccUserFN,  tfCreateAccUserLN, tfCreateAccEmail = new TextField();

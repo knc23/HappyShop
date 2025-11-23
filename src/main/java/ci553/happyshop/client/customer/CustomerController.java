@@ -3,6 +3,7 @@ package ci553.happyshop.client.customer;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.time.LocalDate;
+import java.util.List;
 
 public class CustomerController {
     public CustomerModel cusModel;
@@ -21,6 +22,7 @@ public class CustomerController {
     public void login(String accountNumber, String password) {
         currentUser = cusUserManage.authenticate(accountNumber, password);
         if (currentUser != null) {
+            cusModel.setCurrentUser(currentUser);
             cusView.tfAccID.setText("");
             cusView.pfAccPwd.setText("");
             cusView.laLoginMsg.setText("");
@@ -103,6 +105,17 @@ public class CustomerController {
         }
     }
 
+    public void showHistory() {
+        List<String> purchase = currentUser.getPurchaseHistory();
+        if(purchase.isEmpty()) {
+            String historyMsg = "No purchase has been done before";
+            cusView.taHistory.setText(historyMsg);
+        } else {
+            String historyPurchase = String.join(",", purchase);
+            cusView.taHistory.setText(historyPurchase);
+        }
+    }
+
     public void doAction(String action) throws SQLException, IOException {
         switch (action) {
             case "Create Account" :
@@ -125,6 +138,9 @@ public class CustomerController {
                 break;
             case "Add to Trolley":
                 cusModel.addToTrolley();
+                break;
+            case "My History":
+                showHistory();
                 break;
             case "Add to ALL Wish List":
                 cusModel.addALLToWishList();

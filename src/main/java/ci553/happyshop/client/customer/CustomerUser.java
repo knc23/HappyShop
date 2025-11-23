@@ -1,6 +1,8 @@
 package ci553.happyshop.client.customer;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 public class CustomerUser {
     private String firstName;
@@ -10,6 +12,8 @@ public class CustomerUser {
     private String email;
     private LocalDate birthDate;
 
+    private List<String> purchaseHistory;
+
     public CustomerUser( String accountNumber, String password, String firstName, String lastName, String email, LocalDate birthDate) {
 
         this.firstName = firstName;
@@ -18,6 +22,8 @@ public class CustomerUser {
         this.password = password;
         this.email = email;
         this.birthDate = birthDate;
+
+        this.purchaseHistory = new ArrayList<>();
     }
 
     public String getFirstName() {
@@ -38,6 +44,12 @@ public class CustomerUser {
     public LocalDate getBirthDate() {
         return birthDate;
     }
+
+    public List<String> getPurchaseHistory() {
+        return purchaseHistory;
+    }
+
+    /// ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
     public String getPassword() {
@@ -66,5 +78,11 @@ public class CustomerUser {
 
     public void setBirthDate(LocalDate birthDate) {
         this.birthDate = birthDate;
+    }
+
+
+    public void addPurchaseHistory(String purchase) {
+        purchaseHistory.add(purchase);
+        System.out.println(purchaseHistory);
     }
 }

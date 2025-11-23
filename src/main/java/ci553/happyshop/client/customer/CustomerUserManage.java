@@ -31,7 +31,7 @@ public class CustomerUserManage {
     }
 
     public boolean addUser(CustomerUser user) {
-        if ( accountExists(currentUser.getAccountNumber()) ) {
+        if ( accountExists(user.getAccountNumber()) ) {
             return false;
         }
         users.put(user.getAccountNumber(), user);

@@ -25,7 +25,7 @@ public class CustomerController {
             cusView.pfAccPwd.setText("");
             cusView.laLoginMsg.setText("");
             cusView.showSearchPage();
-            System.out.println("As " + currentUser.getAccountNumber() + " " + currentUser.getFirstName() + " " + currentUser.getLastName() + " Logged in");
+            System.out.println(currentUser.getAccountNumber() + " " + currentUser.getFirstName() + " " + currentUser.getLastName() + " Logged in");
         } else {
             cusView.tfAccID.setText("");
             cusView.pfAccPwd.setText("");

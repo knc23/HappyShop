@@ -109,11 +109,15 @@ public class CustomerView  {
         welcomeRoot.getChildren().add(vbLoginPage);
 
         Scene scene = new Scene(welcomeRoot, WIDTH, HEIGHT);
-        window.setScene(scene);
-        window.setTitle("🛒 HappyShop Customer Client");
-        WinPosManager.registerWindow(window,WIDTH,HEIGHT); //calculate position x and y for this window
-        window.show();
+//        window.setScene(scene);
+//        window.setTitle("🛒 HappyShop Customer Client");
+//        WinPosManager.registerWindow(window,WIDTH,HEIGHT); //calculate position x and y for this window
+//        window.show();
         viewWindow=window;// Sets viewWindow to this window for future reference and management.
+        viewWindow.setTitle("🛒 HappyShop Customer Client");
+        WinPosManager.registerWindow(viewWindow,WIDTH,HEIGHT); //calculate position x and y for this window
+        viewWindow.setScene(scene);
+        viewWindow.show();
     }
 
 /// --------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -134,7 +138,11 @@ public class CustomerView  {
         btnHistory.setStyle(UIStyle.buttonStyle);
         btnHistory.setOnAction(this::buttonClicked);
 
-        HBox hbShopMenu = new HBox(10, laShopName, btnWishList, btnTrolley, btnHistory);
+        Button btnLogOut = new Button("Log Out");
+        btnLogOut.setStyle(UIStyle.buttonStyle);
+        btnLogOut.setOnAction(this::buttonClicked);
+
+        HBox hbShopMenu = new HBox(10, laShopName, btnWishList, btnTrolley, btnHistory, btnLogOut);
         hbShopMenu.setPrefWidth(COLUMN_WIDTH);
         hbShopMenu.setAlignment(Pos.CENTER);
         hbShopMenu.setStyle("-fx-padding: 15px;");
@@ -290,7 +298,7 @@ public class CustomerView  {
 
         //--------------------------------------------------------------------------------------------------------------
 
-        Button btnBack = new Button("Have an Account already? Back to Login");
+        Button btnBack = new Button("Back to Login");
         btnBack.setOnAction(this::buttonClicked);
 
         //--------------------------------------------------------------------------------------------------------------
@@ -545,16 +553,9 @@ public class CustomerView  {
         try{
             Button btn = (Button)event.getSource();
             String action = btn.getText();
-//            if(action.equals("LOGIN")) {
-//                cusController.login(tfAccID.getText(), pfAccPwd.getText());
-//            }
             if(action.equals("Create Account")) {
-                //showPage(vbCreateAccPage);
                 welcomeRoot.getChildren().clear();
                 welcomeRoot.getChildren().add(vbCreateAccPage);
-                if (viewWindow.getScene().getRoot() != welcomeRoot) {
-                    viewWindow.setScene(new Scene(welcomeRoot, WIDTH, HEIGHT));
-                }
             }
             if(action.equals("Have an Account already? Back to Login")) {
                 showPage(vbLoginPage);
@@ -568,7 +569,13 @@ public class CustomerView  {
             if(action.equals("My History")) {
                 showPage(vbHistoryPage);
             }
-            //log out button
+            if(action.equals("Log Out")) {
+                viewWindow.getScene().setRoot(welcomeRoot);
+            }
+            if(action.equals("Back to Login")) {
+                welcomeRoot.getChildren().setAll(vbLoginPage);
+                viewWindow.getScene().setRoot(welcomeRoot);
+            }
             if(action.equals("More Information") && obrLvProducts.getSelectionModel().getSelectedItem()!=null) {
                 showPage(vbInfoPage);
             }
@@ -581,7 +588,6 @@ public class CustomerView  {
             if(action.equals("OK & Close")){
                 showPage(vbInfoPage);
                 cusController.doAction(action);
-                //showLoginPage();
             }
             cusController.doAction(action);
         }
@@ -611,18 +617,11 @@ public class CustomerView  {
     }
 
     public void showSearchPage() {
-        Scene scene = new Scene(vbRoot, WIDTH, HEIGHT);
-        viewWindow.setScene(scene);
+        viewWindow.getScene().setRoot(vbRoot);
     }
 
     public void showLoginPage() {
-        welcomeRoot.getChildren().clear();
-        welcomeRoot.getChildren().add(vbLoginPage);
-
-        if (viewWindow.getScene() == null || viewWindow.getScene().getRoot() != welcomeRoot) {
-            Scene scene = new Scene(welcomeRoot, WIDTH, HEIGHT);
-            viewWindow.setScene(scene);
-        }
+        viewWindow.getScene().setRoot(welcomeRoot);
     }
 
     // Replaces the last child of hbRoot with the specified page.

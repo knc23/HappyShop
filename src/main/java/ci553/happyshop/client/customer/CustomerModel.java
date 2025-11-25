@@ -33,15 +33,15 @@ public class CustomerModel {
     }
 
     private Product theProduct =null; // product found from search
-    private ArrayList<Product> trolley =  new ArrayList<>(); // a list of products in trolley
-    private ArrayList<Product> wishList = new ArrayList<>();
+    //private ArrayList<Product> trolley =  new ArrayList<>(); // a list of products in trolley
+    //private ArrayList<Product> wishList = new ArrayList<>();
 
     // Four UI elements to be passed to CustomerView for display updates.
     private String imageName = "imageHolder.jpg";                // Image to show in product preview (Search Page)
     private String displayLaSearchResult = "No Product was searched yet"; // Label showing search result message (Search Page)
     private String displayTaInfo = "";
-    private String displayTaWishList = "";
-    private String displayTaTrolley = "";                                // Text area content showing current trolley items (Trolley Page)
+    //private String displayTaWishList = "";
+    //private String displayTaTrolley = "";                                // Text area content showing current trolley items (Trolley Page)
     private String displayTaReceipt = "";                                // Text area content showing receipt after checkout (Receipt Page)
 
     public void setCurrentUser(CustomerUser user) {
@@ -100,7 +100,7 @@ public class CustomerModel {
         if(theProduct!= null){
 
             makeOrganizedWishList();
-            displayTaWishList = ProductListFormatter.buildString(wishList); //build a String for trolley so that we can show it
+            //displayTaWishList = ProductListFormatter.buildString(currentUser.getWishList()); //build a String for trolley so that we can show it
         }
         else{
             displayLaSearchResult = "Please search for an available product before adding it to the trolley";
@@ -111,15 +111,19 @@ public class CustomerModel {
     }
 
     void makeOrganizedWishList(){
-        for ( Product product : wishList) {
+        for ( Product product : currentUser.getWishList()) {
             if ( product.getProductId().equals(theProduct.getProductId())) {
                 product.setOrderedQuantity(product.getOrderedQuantity() + theProduct.getOrderedQuantity());
                 return;
             }
         }
-        Product newProduct = new Product(theProduct.getProductId(), theProduct.getProductDescription(), theProduct.getProductImageName(), theProduct.getUnitPrice(), theProduct.getStockQuantity());
-        wishList.add(newProduct);
-        wishList.sort(Comparator.comparing(Product::getProductId));
+        Product newProduct = new Product(theProduct.getProductId(),
+                                        theProduct.getProductDescription(),
+                                        theProduct.getProductImageName(),
+                                        theProduct.getUnitPrice(),
+                                        theProduct.getStockQuantity());
+        currentUser.getWishList().add(newProduct);
+        currentUser.getWishList().sort(Comparator.comparing(Product::getProductId));
     }
 
     void addToTrolley(){
@@ -135,7 +139,7 @@ public class CustomerModel {
             // trolley.add(theProduct);
 
             makeOrganizedTrolley();
-            displayTaTrolley = ProductListFormatter.buildString(trolley); //build a String for trolley so that we can show it
+            //displayTaTrolley = ProductListFormatter.buildString(currentUser.getTrolley()); //build a String for trolley so that we can show it
         }
         else{
             displayLaSearchResult = "Please search for an available product before adding it to the trolley";
@@ -146,15 +150,19 @@ public class CustomerModel {
     }
 
     void makeOrganizedTrolley(){
-        for ( Product product : trolley) {
+        for ( Product product : currentUser.getTrolley()) {
             if ( product.getProductId().equals(theProduct.getProductId())) {
                 product.setOrderedQuantity(product.getOrderedQuantity() + theProduct.getOrderedQuantity());
                 return;
             }
         }
-        Product newProduct = new Product(theProduct.getProductId(), theProduct.getProductDescription(), theProduct.getProductImageName(), theProduct.getUnitPrice(), theProduct.getStockQuantity());
-        trolley.add(newProduct);
-        trolley.sort(Comparator.comparing(Product::getProductId));
+        Product newProduct = new Product(theProduct.getProductId(),
+                                    theProduct.getProductDescription(),
+                                    theProduct.getProductImageName(),
+                                    theProduct.getUnitPrice(),
+                                    theProduct.getStockQuantity());
+        currentUser.getTrolley().add(newProduct);
+        currentUser.getTrolley().sort(Comparator.comparing(Product::getProductId));
     }
 
     public void addALLToWishList() {
@@ -166,22 +174,21 @@ public class CustomerModel {
     }
 
     void checkOut() throws IOException, SQLException {
-        if(!trolley.isEmpty()){
+        if(!currentUser.getTrolley().isEmpty()){
             // Group the products in the trolley by productId to optimize stock checking
             // Check the database for sufficient stock for all products in the trolley.
             // If any products are insufficient, the update will be rolled back.
             // If all products are sufficient, the database will be updated, and insufficientProducts will be empty.
             // Note: If the trolley is already organized (merged and sorted), grouping is unnecessary.
-            ArrayList<Product> groupedTrolley= groupProductsById(trolley);
+            ArrayList<Product> groupedTrolley= groupProductsById(currentUser.getTrolley());
             ArrayList<Product> insufficientProducts= databaseRW.purchaseStocks(groupedTrolley);
 
             if(insufficientProducts.isEmpty()){ // If stock is sufficient for all products
                 //get OrderHub and tell it to make a new Order
 
                 OrderHub orderHub =OrderHub.getOrderHub();
-                Order theOrder = orderHub.newOrder(trolley);
-                trolley.clear();
-                displayTaTrolley ="";
+                Order theOrder = orderHub.newOrder(currentUser.getTrolley());
+                currentUser.getTrolley().clear();
                 displayTaReceipt = String.format(
                         "Order_ID: %s\nOrdered_Date_Time: %s\n%s",
                         theOrder.getOrderId(),
@@ -189,8 +196,6 @@ public class CustomerModel {
                         ProductListFormatter.buildString(theOrder.getProductList())
                 );
                 System.out.println(displayTaReceipt);
-
-
 
                 currentUser.addPurchaseHistory(displayTaReceipt);
                 System.out.println("Added lastest purchase to history");
@@ -216,7 +221,7 @@ public class CustomerModel {
             }
         }
         else{
-            displayTaTrolley = "Your trolley is empty";
+            cusView.update("","","Your trolley is empty", "");
             System.out.println("Your trolley is empty");
         }
         updateView();
@@ -243,8 +248,7 @@ public class CustomerModel {
     }
 
     void cancel(){
-        trolley.clear();
-        displayTaTrolley="";
+        currentUser.getTrolley().clear();
         updateView();
     }
     void closeReceipt(){
@@ -272,16 +276,19 @@ public class CustomerModel {
         else{
             imageName = "imageHolder.jpg";
         }
-        cusView.update(displayTaInfo, displayTaWishList, displayTaTrolley,displayTaReceipt);
+        String wishList = ProductListFormatter.buildString(currentUser.getWishList());
+        String trolley = ProductListFormatter.buildString(currentUser.getTrolley());
+
+        cusView.update(displayTaInfo,wishList, trolley, displayTaReceipt);
     }
      // extra notes:
      //Path.toUri(): Converts a Path object (a file or a directory path) to a URI object.
      //File.toURI(): Converts a File object (a file on the filesystem) to a URI object
 
     //for test only
-    public ArrayList<Product> getWishList() { return wishList;}
+    public ArrayList<Product> getWishList() { return currentUser.getWishList();}
     public ArrayList<Product> getTrolley() {
-        return trolley;
+        return currentUser.getTrolley();
     }
     public void setTheProduct(Product theProduct) {
         this.theProduct = theProduct;
